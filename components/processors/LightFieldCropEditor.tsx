@@ -57,7 +57,7 @@ useEffect(() => {
     <option value="3:4">3:4 (Portrait / Default)</option>
     <option value="4:3">4:3 (Landscape)</option>
     <option value="16:9">16:9 (Widescreen)</option>
-    <option value="9:16">9:16 (Tall Portrait)</option>
+    <option value="9:16">9:16 (Looking Glass Go)</option>
     <option value="1:1">1:1 (Square)</option>
     <option value="custom">Custom...</option>
   </select>
