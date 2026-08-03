@@ -92,10 +92,10 @@ export const Cropper: FC<CropperProps> = ({
     onChangeProp?.(newCropRegion);
   }, [targetRatio, sourceRatioProp, source, crop, onChangeProp]);
 
-  return (
+return (
     <StyledReactCrop
       className="w-full rounded-lg"
-      aspect={rectRatio}
+      aspect={targetRatio}
       keepSelection
       crop={crop}
       onChange={onChange}
