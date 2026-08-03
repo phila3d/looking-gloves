@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Cropper } from '@/components/common/Cropper';
 import { IconButton } from '@/components/common/IconButton';
 import { LightFieldFocusViewer } from '@/components/common/LightFieldFocusViewer';
-import { focusScale, useSequence } from '@components/editor/useSequence';
+import { focusScale, useSequence } from '@/components/editor/useSequence';
 import { scrollToBottom } from '@/utils/dom';
 import { SequenceProcessorInfo } from './types';
 
