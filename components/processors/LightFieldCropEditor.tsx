@@ -36,14 +36,8 @@ const currentRatio =
   }, [frames, activated]);
 
 useEffect(() => {
-  // Reset crop box whenever aspect ratio changes
-  setCropRegion({
-    unit: '%',
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
-  });
+  // Clearing cropRegion lets the Cropper recalculate a proper centered box
+  setCropRegion(undefined);
 }, [currentRatio, setCropRegion]);
 
   if (!activated) return null;
@@ -89,6 +83,7 @@ useEffect(() => {
 
       <div className="relative max-w-full">
         <Cropper
+          key={currentRatio}
           source={frames?.[0]}
           targetRatio={currentRatio}
           crop={cropRegion}
