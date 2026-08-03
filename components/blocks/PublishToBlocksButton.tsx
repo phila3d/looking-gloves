@@ -101,6 +101,9 @@ export const PublishToBlocksButton: FC<PublishToBlocksButtonProps> = ({
 
   useEffect(() => {
     if (modalState.opened) {
+      // Dynamically get the current domain (e.g. "https://lkg-ar.vercel.app" or "https://lkg.vercel.app")
+      const appUrl = typeof window !== 'undefined' ? window.location.origin : 'https://lkg.vercel.app';
+
       if (sourceInfo?.sourceType === 'Luma') {
         const title = `${sourceInfo?.title} - by @${sourceInfo?.author}`;
         const description = [
@@ -108,13 +111,13 @@ export const PublishToBlocksButton: FC<PublishToBlocksButtonProps> = ({
           sourceInfo.url,
           '',
           'Made into Looking Glass hologram with the Looking Gloves 🧤',
-          'https://lkg.vercel.app',
+          appUrl,
         ].join('\n');
         setTitle(title);
         setDescription(description);
       } else {
         setTitle(sourceInfo?.title || '');
-        setDescription(`Made with the Looking Gloves 🧤 https://lkg.vercel.app`);
+        setDescription(`Made with the Looking Gloves 🧤 ${appUrl}`);
       }
       setPrivacy(PrivacyType.Unlisted);
       setPending(false);
