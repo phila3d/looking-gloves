@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
   swcMinify: false,
+  webpack: (config) => {
+    config.optimization.minimize = false; // Prevents the WASM Terser crash on Node 20
+    return config;
+  },
   rewrites: () => [
     {
       // Fetch light field photoset from Luma CDN
