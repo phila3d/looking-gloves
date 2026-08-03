@@ -35,6 +35,18 @@ const currentRatio =
     }
   }, [frames, activated]);
 
+useEffect(() => {
+  // Reset crop box whenever aspect ratio changes
+  setCropRegion({
+    unit: '%',
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+    aspect: currentRatio,
+  });
+}, [currentRatio, setCropRegion]);
+
   if (!activated) return null;
 
   return (
