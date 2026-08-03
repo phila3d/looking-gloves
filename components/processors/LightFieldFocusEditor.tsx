@@ -39,8 +39,8 @@ export const LightFieldFocusEditor: SequenceProcessorInfo = ({ activated, onDone
 
   if (!activated || !frames?.length) return null;
 
- return (
-    <div className="w-full max-w-4xl flex flex-col items-start gap-4">
+return (
+    <div className="w-full max-w-3xl flex flex-col items-start gap-4">
       <h2>Adjust light field focus</h2>
       <p>Drag the slider below to focus on your target</p>
 
@@ -48,7 +48,7 @@ export const LightFieldFocusEditor: SequenceProcessorInfo = ({ activated, onDone
         <LightFieldFocusViewer focus={adjustedFocus} frames={frames} />
       </div>
 
-      <div className="w-full flex items-center gap-4">
+      <div className="w-full flex items-center justify-between gap-4">
         <input
           type="range"
           className="range w-full"

@@ -51,7 +51,7 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
 
   if (!frames?.length) return null;
 
-  // Pure dynamic aspect ratio calculated directly from video frame pixels
+  // Reads exact pixel dimensions of whatever source/crop you load
   const aspect = frames[0].width / frames[0].height;
 
   return (
@@ -64,7 +64,7 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
       style={{ width: '100%', aspectRatio: `${aspect}` }}
     >
       <mesh material={material!}>
-        {/* Scales 3D geometry width up to match video aspect ratio without shrinking height */}
+        {/* Dynamic width adjustment for any arbitrary aspect ratio */}
         <planeGeometry args={[planeSize * aspect, planeSize, 1, 1]} />
       </mesh>
     </Canvas>

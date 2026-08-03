@@ -43,7 +43,7 @@ useEffect(() => {
   if (!activated) return null;
 
   return (
-    <div className="w-full max-w-4xl flex flex-col items-start gap-4">
+    <div className="w-full max-w-3xl flex flex-col items-start gap-4">
       <h2>Crop</h2>
       <p>Drag the handles below to crop</p>
 
