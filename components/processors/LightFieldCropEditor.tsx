@@ -64,9 +64,9 @@ useEffect(() => {
       </div>
 
       <div className="w-full relative">
-        <Cropper aspect={currentRatio}>
-          <LightFieldFocusViewer focus={focus} frames={frames} />
-        </Cropper>
+<Cropper>
+  <LightFieldFocusViewer focus={focus} frames={frames} />
+</Cropper>
       </div>
 
       <div className="w-full flex justify-end mt-4">
