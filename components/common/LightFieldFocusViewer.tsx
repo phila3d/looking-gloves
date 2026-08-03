@@ -56,17 +56,17 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({ focus = 
   if (!frames?.length) return null;
 
   return (
-    <Canvas
-      flat
-      linear
-      frameloop="demand"
-      camera={{ position: [0, 0, cameraZ] }}
-      className="w-full rounded-lg"
-      style={{ width: '100%', aspectRatio: `${aspect}` }}
-    >
-      <mesh material={material!}>
-        <planeGeometry args={[planeSize, planeSize / aspect, 1, 1]} />
-      </mesh>
-    </Canvas>
+<Canvas
+  flat
+  linear
+  frameloop="demand"
+  camera={{ position: [0, 0, cameraZ] }}
+  className="w-full max-w-[600px] rounded-lg mx-auto"
+  style={{ aspectRatio: `${aspect}` }}
+>
+  <mesh material={material!}>
+    <planeGeometry args={[planeSize, planeSize / aspect, 1, 1]} />
+  </mesh>
+</Canvas>
   );
 };
