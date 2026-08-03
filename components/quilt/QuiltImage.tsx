@@ -54,16 +54,17 @@ export const QuiltImage: FC<QuiltImageProps> = ({ className, onRendered, ...prop
         const x = col * FRAME_WIDTH;
         const y = row * frameHeight;
 
-        // Calculate offset according to focus value
-        const focusValue = focus / 10;
+      // Calculate offset according to focus value
+        // to draw the focus target in the center of the frame
+        const focusValue = focus; // FIXED: Matches WebGL shader 1-to-1
         const offset = (i - frames.length / 2) * -focusValue * frame.width;
 
-        // Draw actual frame onto quilt
+        // Draw the actual frame onto the quilt
         drawSourceOntoDest(frame, canvasRef.current, cropRegion!, {
           dx: x,
           dy: y,
           dw: FRAME_WIDTH,
-          dh: frameHeight, // FIXED: Now uses dynamic frameHeight instead of FRAME_HEIGHT!
+          dh: frameHeight,
           sourceOffsetX: offset,
           fillEdge: true,
         });
