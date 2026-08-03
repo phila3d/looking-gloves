@@ -51,26 +51,26 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
 
  if (!frames?.length) return null;
 
-  // Calculates exact aspect ratio directly from source video pixels
-  const aspect = frames[0].width / frames[0].height;
+// Calculates true video aspect ratio directly from extracted frame pixels
+const aspect = frames[0].width / frames[0].height;
 
-  return (
-    <div 
-      className="w-full relative overflow-hidden rounded-lg bg-black" 
-      style={{ aspectRatio: `${aspect}` }}
+return (
+  <div 
+    className="w-full relative overflow-hidden rounded-lg bg-black" 
+    style={{ aspectRatio: `${aspect}` }}
+  >
+    <Canvas
+      flat
+      linear
+      frameloop="demand"
+      camera={{ position: [0, 0, cameraZ] }}
+      style={{ width: '100%', height: '100%' }}
     >
-      <Canvas
-        flat
-        linear
-        frameloop="demand"
-        camera={{ position: [0, 0, cameraZ] }}
-        style={{ width: '100%', height: '100%' }}
-      >
-        <mesh material={material!}>
-          {/* Matches 3D mesh width to aspect ratio */}
-          <planeGeometry args={[planeSize * aspect, planeSize, 1, 1]} />
-        </mesh>
-      </Canvas>
-    </div>
-  );
+      {/* scale={[aspect, 1, 1]} dynamically expands the 3D plane horizontally */}
+      <mesh scale={[aspect, 1, 1]} material={material!}>
+        <planeGeometry args={[planeSize, planeSize, 1, 1]} />
+      </mesh>
+    </Canvas>
+  </div>
+);
 };
