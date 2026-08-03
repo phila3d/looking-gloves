@@ -18,10 +18,6 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
   focus = 0,
   frames,
 }) => {
-  const fov = 75;
-  const planeSize = 1;
-  const cameraZ = planeSize / (2 * Math.tan((fov * Math.PI) / 360));
-
   useEffect(() => {
     return () => disposeTexture();
   }, []);
@@ -51,6 +47,7 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
 
   if (!frames?.length) return null;
 
+  // Calculates exact aspect ratio dynamically from extracted frame pixels
   const aspect = frames[0].width / frames[0].height;
 
   return (
@@ -60,14 +57,23 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
     >
       <Canvas
         key={aspect}
+        orthographic
         flat
         linear
         frameloop="demand"
-        camera={{ position: [0, 0, cameraZ] }}
+        camera={{
+          left: -aspect,
+          right: aspect,
+          top: 1,
+          bottom: -1,
+          near: 0.1,
+          far: 10,
+          position: [0, 0, 1],
+        }}
         style={{ width: '100%', height: '100%' }}
       >
         <mesh scale={[aspect, 1, 1]} material={material!}>
-          <planeGeometry args={[planeSize, planeSize, 1, 1]} />
+          <planeGeometry args={[2, 2, 1, 1]} />
         </mesh>
       </Canvas>
     </div>
