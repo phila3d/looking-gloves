@@ -64,7 +64,7 @@ useEffect(() => {
       </div>
 
       <div className="w-full relative">
-        <Cropper aspectRatio={currentRatio}>
+        <Cropper aspect={currentRatio}>
           <LightFieldFocusViewer focus={focus} frames={frames} />
         </Cropper>
       </div>
