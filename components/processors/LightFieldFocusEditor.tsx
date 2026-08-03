@@ -1,45 +1,25 @@
-import { useState, useEffect } from 'react';
-
+import React, { useState } from 'react';
 import { IconButton } from '@/components/common/IconButton';
 import { LightFieldFocusViewer } from '@/components/common/LightFieldFocusViewer';
-import { focusScale, useSequence } from '@/components/editor/useSequence';
-import { scrollToBottom } from '@/utils/dom';
-
+import { useSequence } from '@/components/editor/useSequence';
 import { SequenceProcessorInfo } from './types';
 
 export const LightFieldFocusEditor: SequenceProcessorInfo = ({ activated, onDone }) => {
   const { focus, setFocus, frames } = useSequence();
+  const [adjustedFocus, setAdjustedFocus] = useState<number>(focus || 0);
 
-  // for holding the adjusted focus value from the slider
-  const [adjustedFocus, setAdjustedFocus] = useState(0);
+  const onFocusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAdjustedFocus(parseFloat(e.target.value));
+  };
 
-  // when confirm, save the focus value and exit the editor
   const onConfirm = () => {
-    setFocus(adjustedFocus * focusScale);
+    setFocus(adjustedFocus);
     onDone();
   };
 
-  // when the slider value changes, update the focus state and the texture
-  const onFocusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    setAdjustedFocus(value);
-  };
+  if (!activated) return null;
 
-  // sync focus from props to state
-  useEffect(() => {
-    const value = focus / focusScale;
-    setAdjustedFocus(value);
-  }, [focus]);
-
-  useEffect(() => {
-    if (frames?.length && activated) {
-      scrollToBottom();
-    }
-  }, [frames, activated]);
-
-  if (!activated || !frames?.length) return null;
-
-return (
+  return (
     <div className="w-full max-w-3xl flex flex-col items-start gap-4">
       <h2>Adjust light field focus</h2>
       <p>Drag the slider below to focus on your target</p>
