@@ -8,32 +8,28 @@ import {
   setTextureFocus,
   disposeTexture,
 } from '@/components/common/LightFieldMaterial';
-import { useSequence } from '@/components/editor/useSequence';
 
 export interface LightFieldFocusViewerProps {
   focus?: number;
   frames?: HTMLCanvasElement[];
 }
 
-export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({ focus = 0, frames }) => {
+export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
+  focus = 0,
+  frames,
+}) => {
   const fov = 75;
   const planeSize = 1;
   const cameraZ = planeSize / (2 * Math.tan((fov * Math.PI) / 360));
-  const canvasSize = 1000;
-  const aspect = frames?.[0] ? frames[0].width / frames[0].height : 1;
 
-
-  // when unmount, dispose the texture to prevent memory leak
   useEffect(() => {
     return () => disposeTexture();
   }, []);
 
-  // when the focus changes, update the texture
   useEffect(() => {
     setTextureFocus(focus);
   }, [focus]);
 
-  // when the frames change, update the texture
   useEffect(() => {
     if (frames?.length) {
       const numberOfFrames = frames.length;
@@ -55,18 +51,22 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({ focus = 
 
   if (!frames?.length) return null;
 
+  // Pure dynamic aspect ratio calculated directly from video frame pixels
+  const aspect = frames[0].width / frames[0].height;
+
   return (
-<Canvas
-  flat
-  linear
-  frameloop="demand"
-  camera={{ position: [0, 0, cameraZ] }}
-  className="w-full max-w-[600px] rounded-lg mx-auto"
-  style={{ aspectRatio: `${aspect}` }}
->
-  <mesh material={material!}>
-    <planeGeometry args={[planeSize, planeSize / aspect, 1, 1]} />
-  </mesh>
-</Canvas>
+    <Canvas
+      flat
+      linear
+      frameloop="demand"
+      camera={{ position: [0, 0, cameraZ] }}
+      className="w-full rounded-lg"
+      style={{ width: '100%', aspectRatio: `${aspect}` }}
+    >
+      <mesh material={material!}>
+        {/* Scales 3D geometry width up to match video aspect ratio without shrinking height */}
+        <planeGeometry args={[planeSize * aspect, planeSize, 1, 1]} />
+      </mesh>
+    </Canvas>
   );
 };
