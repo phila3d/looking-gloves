@@ -20,8 +20,8 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
 }) => {
   const fov = 75;
   const planeSize = 1;
-// Pull camera back slightly (1.05x factor) so the entire frame fits without top/bottom cropping
-const cameraZ = (planeSize / (2 * Math.tan((fov * Math.PI) / 360))) * 1.05;
+// Restore exact 1:1 camera distance (removes black letterbox borders)
+const cameraZ = planeSize / (2 * Math.tan((fov * Math.PI) / 360));
 
   useEffect(() => {
     return () => disposeTexture();
