@@ -19,7 +19,7 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({ focus = 
   const fov = 75;
   const planeSize = 1;
   const cameraZ = planeSize / (2 * Math.tan((fov * Math.PI) / 360));
-  const canvasSize = 1200;
+  const canvasSize = 1000;
   const aspect = frames?.[0] ? frames[0].width / frames[0].height : 1;
 
 
