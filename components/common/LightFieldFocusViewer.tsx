@@ -20,6 +20,7 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({ focus = 
   const planeSize = 1;
   const cameraZ = planeSize / (2 * Math.tan((fov * Math.PI) / 360));
   const canvasSize = 600;
+  const aspect = frames?.[0] ? frames[0].width / frames[0].height : 1;
 
   // when unmount, dispose the texture to prevent memory leak
   useEffect(() => {
@@ -59,11 +60,11 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({ focus = 
       linear
       frameloop="demand"
       camera={{ position: [0, 0, cameraZ] }}
-      className="rounded-lg max-w-full aspect-square"
-      style={{ width: canvasSize }}
+className="rounded-lg max-w-full"
+style={{ width: canvasSize, aspectRatio: `${aspect}` }}
     >
       <mesh material={material!}>
-        <planeGeometry args={[planeSize, planeSize, 1, 1]} />
+        <planeGeometry args={[planeSize, planeSize / aspect, 1, 1]} />
       </mesh>
     </Canvas>
   );
