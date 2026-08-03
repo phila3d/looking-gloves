@@ -49,24 +49,24 @@ export const LightFieldFocusViewer: FC<LightFieldFocusViewerProps> = ({
     }
   }, [frames]);
 
-  if (!frames?.length) return null;
+ if (!frames?.length) return null;
 
-  // Reads exact pixel dimensions of whatever source/crop you load
-  const aspect = frames[0].width / frames[0].height;
+// Calculate aspect ratio directly from extracted frame dimensions
+const aspect = frames[0].width / frames[0].height;
 
-  return (
-    <Canvas
-      flat
-      linear
-      frameloop="demand"
-      camera={{ position: [0, 0, cameraZ] }}
-      className="w-full rounded-lg"
-      style={{ width: '100%', aspectRatio: `${aspect}` }}
-    >
-      <mesh material={material!}>
-        {/* Dynamic width adjustment for any arbitrary aspect ratio */}
-        <planeGeometry args={[planeSize * aspect, planeSize, 1, 1]} />
-      </mesh>
-    </Canvas>
-  );
+return (
+  <Canvas
+    flat
+    linear
+    frameloop="demand"
+    camera={{ position: [0, 0, cameraZ] }}
+    className="w-full rounded-lg"
+    style={{ width: '100%', aspectRatio: `${aspect}` }}
+  >
+    <mesh material={material!}>
+      {/* planeSize * aspect ensures the 3D mesh geometry matches frame proportions */}
+      <planeGeometry args={[planeSize * aspect, planeSize, 1, 1]} />
+    </mesh>
+  </Canvas>
+);
 };

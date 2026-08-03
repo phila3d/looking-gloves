@@ -40,33 +40,33 @@ export const LightFieldFocusEditor: SequenceProcessorInfo = ({ activated, onDone
   if (!activated || !frames?.length) return null;
 
 return (
-    <div className="w-full max-w-3xl flex flex-col items-start gap-4">
-      <h2>Adjust light field focus</h2>
-      <p>Drag the slider below to focus on your target</p>
+  <div className="w-full max-w-3xl flex flex-col items-start gap-4">
+    <h2>Adjust light field focus</h2>
+    <p>Drag the slider below to focus on your target</p>
 
-      <div className="w-full relative">
-        <LightFieldFocusViewer focus={adjustedFocus} frames={frames} />
-      </div>
-
-      <div className="w-full flex items-center justify-between gap-4">
-        <input
-          type="range"
-          className="range w-full"
-          min="-0.025"
-          max="0.025"
-          step="0.0001"
-          value={adjustedFocus}
-          onChange={onFocusChange}
-        />
-        <IconButton
-          tooltip="Confirm"
-          iconType="tick"
-          buttonClassName="btn-success"
-          onClick={onConfirm}
-        />
-      </div>
+    <div className="w-full relative">
+      <LightFieldFocusViewer focus={adjustedFocus} frames={frames} />
     </div>
-  );
+
+    <div className="w-full flex items-center justify-between gap-4">
+      <input
+        type="range"
+        className="range w-full"
+        min="-0.025"
+        max="0.025"
+        step="0.0001"
+        value={adjustedFocus}
+        onChange={onFocusChange}
+      />
+      <IconButton
+        tooltip="Confirm"
+        iconType="tick"
+        buttonClassName="btn-success"
+        onClick={onConfirm}
+      />
+    </div>
+  </div>
+);
 };
 
 LightFieldFocusEditor.title = 'Edit focus';

@@ -13,7 +13,8 @@ import { SequenceProcessorInfo } from './types';
 export const LightFieldCropEditor: SequenceProcessorInfo = ({ activated, onDone }) => {
   const { focus, frames, cropRegion, setCropRegion } = useSequence();
 
-const [aspectPreset, setAspectPreset] = useState<string>('3:4');
+// Line 16: Set default preset to match widescreen video
+const [aspectPreset, setAspectPreset] = useState<string>('16:9');
 const [customW, setCustomW] = useState<number>(3);
 const [customH, setCustomH] = useState<number>(4);
 
@@ -42,8 +43,11 @@ useEffect(() => {
 
   if (!activated) return null;
 
-  return (
-    <div className="w-full max-w-3xl flex flex-col items-start gap-4">
+ return (
+  <div className="w-full max-w-3xl flex flex-col items-start gap-4">
+    {/* rest of your crop editor JSX */}
+  </div>
+);
       <h2>Crop</h2>
       <p>Drag the handles below to crop</p>
 
