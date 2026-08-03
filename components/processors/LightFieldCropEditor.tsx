@@ -65,8 +65,13 @@ export const LightFieldCropEditor: SequenceProcessorInfo = ({ activated, onDone 
         </select>
       </div>
 
-      <div className="w-full relative">
-        <Cropper targetRatio={currentRatio}>
+<div className="w-full relative">
+        <Cropper
+          targetRatio={currentRatio}
+          sourceRatio={videoRatio}
+          crop={cropRegion}
+          onChange={setCropRegion}
+        >
           <LightFieldFocusViewer focus={focus} frames={frames} />
         </Cropper>
       </div>

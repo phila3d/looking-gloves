@@ -5,6 +5,9 @@ import ReactCrop, { Crop, PercentCrop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
 const StyledReactCrop = styled(ReactCrop)`
+  width: 100%;
+  display: block;
+
   .ReactCrop__crop-selection {
     border: 2px solid #fff;
   }
@@ -60,19 +63,19 @@ export const Cropper: FC<CropperProps> = ({
   };
 
   useEffect(() => {
-    const sourceRatio = source?.width! / source?.height! || sourceRatioProp;
-    const rectRatio = targetRatio / sourceRatio! || 1;
-    setRectRatio(rectRatio);
+    const sourceRatio = source?.width! / source?.height! || sourceRatioProp || 16 / 9;
+    const calculatedRectRatio = targetRatio / sourceRatio || 1;
+    setRectRatio(calculatedRectRatio);
 
     if (crop) return;
 
     let rectWidth: number, rectHeight: number;
-    if (rectRatio < 1) {
-      rectWidth = rectRatio;
+    if (calculatedRectRatio < 1) {
+      rectWidth = calculatedRectRatio;
       rectHeight = 1;
     } else {
       rectWidth = 1;
-      rectHeight = 1 / rectRatio;
+      rectHeight = 1 / calculatedRectRatio;
     }
 
     const rectX = Math.round(((1 - rectWidth) / 2) * 100);
@@ -91,7 +94,7 @@ export const Cropper: FC<CropperProps> = ({
 
   return (
     <StyledReactCrop
-      className="rounded-lg"
+      className="w-full rounded-lg"
       aspect={rectRatio}
       keepSelection
       crop={crop}
