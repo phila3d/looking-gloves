@@ -35,67 +35,78 @@ export const LumaLightfieldDownloader: SequenceProcessorInfo = ({ activated, onD
     setFetching(true);
 
     try {
-      // fetch luma page
+      // 1. Fetch info via API proxy
       updateProgress(-1, 'Fetching info ...');
       const resp = await fetch(`/api/luma/getInfo?url=${encodeURIComponent(url)}`);
+      if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+      
       const json = await resp.json();
-
       console.log('Luma NeRF info', json);
-      const {
-        pageProps: {
-          props: {
-            pageProps: {
-              artifacts: { light_field: lightFieldZipUrl },
-              captureMeta: { captureName, username },
-            },
-          },
-        },
-      } = json;
+
+      // 2. Safe extraction with fallbacks
+      const pageProps = json?.pageProps?.props?.pageProps || json?.props?.pageProps || json;
+      const lightFieldZipUrl = pageProps?.artifacts?.light_field || pageProps?.light_field;
+      const captureName = pageProps?.captureMeta?.captureName || 'Luma Capture';
+      const username = pageProps?.captureMeta?.username || 'Anonymous';
+
+      if (!lightFieldZipUrl) {
+        throw new Error('Could not find light_field ZIP URL in Luma response.');
+      }
 
       setSourceInfo({ title: captureName, author: username, url, sourceType: 'Luma' });
 
-      // download light field photos zip
+      // 3. Download light field photos ZIP
       const zipFilePath = new URL(lightFieldZipUrl).pathname;
       const zipDownloadUrl = `/external/luma/lightfield${zipFilePath}`;
 
-      // download and unzip the light field photos
       updateProgress(-1, 'Downloading light field photos ...');
       const zipFile = await fetchWithProgress(zipDownloadUrl, undefined, (received, total) => {
-        const progress = received / total;
+        const progress = total > 0 ? received / total : 0;
         const receivedInMB = (received / 1024 / 1024).toFixed(2);
-        const totalInMB = (total / 1024 / 1024).toFixed(2);
+        const totalInMB = total > 0 ? (total / 1024 / 1024).toFixed(2) : '?';
         updateProgress(
           progress * 0.9,
           `Downloading light field photos ${receivedInMB}MB / ${totalInMB}MB ...`
         );
       });
 
-      // draw all the frames into canvas
-      const frames: HTMLCanvasElement[] = [];
+      // 4. Unzip and filter ONLY image files
       const { entries } = await unzip(zipFile);
-      const names = Object.keys(entries).sort().reverse();
-      for (let i = 0; i < names.length; i++) {
-        const name = names[i];
-        const blob = await entries[name].blob('image/jpg');
-        const frame = await drawBlobToCanvas(blob);
-        frames.push(frame);
-        updateProgress(0.9 + ((i + 1) / names.length) * 0.1, 'Processing ...');
+      const validImageNames = Object.keys(entries)
+        .filter((name) => !entries[name].isDirectory && /\.(jpg|jpeg|png|webp)$/i.test(name))
+        .sort()
+        .reverse();
+
+      if (validImageNames.length === 0) {
+        throw new Error('No valid image frames found inside the light field ZIP.');
       }
 
-      updateProgress(1, `Downloaded. There are ${names.length} frames in total.`);
+      // 5. Draw frames into canvas
+      const frames: HTMLCanvasElement[] = [];
+      for (let i = 0; i < validImageNames.length; i++) {
+        const name = validImageNames[i];
+        const blob = await entries[name].blob();
+        const frame = await drawBlobToCanvas(blob);
+        frames.push(frame);
+        updateProgress(0.9 + ((i + 1) / validImageNames.length) * 0.1, 'Processing ...');
+      }
+
+      updateProgress(1, `Downloaded. There are ${frames.length} frames in total.`);
 
       setSourceFrames(frames);
       setEnforceOrder(true);
 
-      const middle = Math.floor(frames.length / 2 / 8) * 8;
-      setRange([middle - 24, middle + 24]);
+      // Safe range calculation
+      const middle = Math.floor(frames.length / 2);
+      const halfWindow = Math.min(24, Math.floor(frames.length / 2));
+      setRange([Math.max(0, middle - halfWindow), Math.min(frames.length - 1, middle + halfWindow)]);
 
+      // Only advance to next step on SUCCESS
       onDone();
-    } catch (e) {
-      // TODO show toast
-      updateProgress(0, 'Failed to fetch from Luma.');
-      console.error(e);
-      onDone();
+    } catch (e: any) {
+      console.error('Failed to fetch from Luma:', e);
+      updateProgress(0, `Error: ${e.message || 'Failed to fetch from Luma.'}`);
+      // DO NOT call onDone() here! Leaving the user on this step prevents downstream crashes.
     } finally {
       setFetching(false);
     }
