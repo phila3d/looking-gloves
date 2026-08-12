@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 
 import { IconButton } from '@/components/common/IconButton';
 import { useSequence } from '@/components/editor/useSequence';
-import { canvasToJpeg } from '@/utils/canvas';
+import { canvasToBlob } from '@/utils/canvas';
 import { COLS } from '@/utils/constant';
 import { triggerDownload } from '@/utils/download';
 
@@ -18,7 +18,7 @@ export const QuiltImageSaveButton: FC<QuiltImageSaveButtonProps> = ({ quiltImage
   const { frames } = useSequence();
   const numberOfFrames = frames?.length || 0;
 
-  const _saveQuiltImage = debounce(() => {
+  const _saveQuiltImage = debounce(async () => {
     if (!quiltImage || !numberOfFrames) return;
 
     // Quilt image file name conventions:
@@ -30,9 +30,16 @@ export const QuiltImageSaveButton: FC<QuiltImageSaveButtonProps> = ({ quiltImage
     const name = dayjs().format('YYYY-MM-DD_HH-mm-ss');
     const filename = `${name}_qs${COLS}x${rows}a${aspectRatio.toFixed(2)}.jpg`;
 
-    const url = canvasToJpeg(quiltImage);
-    triggerDownload(url, filename);
-    setPending(false);
+    try {
+      const blob = await canvasToBlob(quiltImage);
+      const url = URL.createObjectURL(blob);
+      triggerDownload(url, filename);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) {
+      console.error('Failed to save quilt image:', error);
+    } finally {
+      setPending(false);
+    }
   }, 300);
 
   const saveQuiltImage = () => {
